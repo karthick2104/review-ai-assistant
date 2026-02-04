@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Interview Assistant | AI-Powered Technical Interview Helper</title>
+    <meta name="description" content="Real-time AI interview assistant for technical coding interviews">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    
+    <!-- App Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🎯</span>
+                    <h1>Interview Assistant</h1>
+                </div>
+                <div class="header-actions">
+                    <button id="clearHistory" class="btn btn-ghost" title="Clear conversation history">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-indicator" id="statusIndicator">
+                <span class="status-dot"></span>
+                <span class="status-text">Ready to listen</span>
+            </div>
+            <div class="pause-timer" id="pauseTimer">
+                <span class="timer-label">Silence:</span>
+                <span class="timer-value" id="timerValue">0.0s</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Transcript Panel -->
+            <section class="panel transcript-panel">
+                <div class="panel-header">
+                    <h2>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                            <line x1="12" y1="19" x2="12" y2="23"/>
+                            <line x1="8" y1="23" x2="16" y2="23"/>
+                        </svg>
+                        Live Transcript
+                    </h2>
+                    <button id="clearTranscript" class="btn btn-sm btn-ghost">Clear</button>
+                </div>
+                <div class="panel-content" id="transcriptContent">
+                    <p class="placeholder-text">Start listening to see the transcript here...</p>
+                </div>
+            </section>
+
+            <!-- Answer Panel -->
+            <section class="panel answer-panel">
+                <div class="panel-header">
+                    <h2>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        AI Answer
+                    </h2>
+                    <div class="loading-indicator" id="loadingIndicator">
+                        <div class="spinner"></div>
+                        <span>Thinking...</span>
+                    </div>
+                </div>
+                <div class="panel-content answer-content" id="answerContent">
+                    <p class="placeholder-text">Answers will appear here after a question is detected...</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Control Bar -->
+        <div class="control-bar">
+            <!-- Audio Source Toggle -->
+            <div class="audio-source-toggle">
+                <button class="source-btn active" id="micBtn" data-source="microphone">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                    <span>Mic</span>
+                </button>
+                <button class="source-btn" id="systemBtn" data-source="system">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                        <line x1="8" y1="21" x2="16" y2="21"/>
+                        <line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                    <span>System</span>
+                </button>
+            </div>
+
+            <!-- Main Listen Button -->
+            <button class="listen-btn" id="listenBtn">
+                <div class="listen-btn-inner">
+                    <svg class="mic-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                    <svg class="stop-icon" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="6" y="6" width="12" height="12" rx="2"/>
+                    </svg>
+                </div>
+                <span class="listen-btn-text">Start Listening</span>
+            </button>
+
+            <!-- Settings -->
+            <div class="settings-group">
+                <div class="setting-item">
+                    <label for="pauseThreshold">Pause: <span id="pauseValue">2.0</span>s</label>
+                    <input type="range" id="pauseThreshold" min="1" max="5" step="0.5" value="2">
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="js/speech.js"></script>
+    <script src="js/gemini.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
